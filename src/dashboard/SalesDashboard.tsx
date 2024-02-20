@@ -2,10 +2,10 @@ import React, { useState } from "react";
 
 import { SearchBar } from "./components/SearchBar";
 import { SalesChart } from "./components/SalesChart";
-import { Game } from "./types";
+import { Game } from "../types";
 import { GameMeta } from "./components/GameMeta";
 
-const App: React.FC = () => {
+export const SalesDashboard: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<Game | undefined>();
   return (
     <div className="grid grid-rows-layout h-screen text-gray-800">
@@ -26,5 +26,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;

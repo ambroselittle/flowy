@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { VictoryChart, VictoryBar, VictoryStack, VictoryAxis } from "victory";
-import { RegionSales } from "../types";
+import { RegionSales } from "../../types";
 
 interface GeoSalesCardProps {
   gameSales: RegionSales[];

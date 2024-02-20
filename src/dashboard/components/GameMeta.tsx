@@ -1,4 +1,4 @@
-import { Game } from "../types";
+import { Game } from "../../types";
 
 type GameMetaProps = {
   game: Game;

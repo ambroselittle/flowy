@@ -1,9 +1,10 @@
 {
   "name": "flowy",
-  "description": "A sample showing some basic flow visualization.",
+  "description": "A sample project using the Kaggle video games sales dataset.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
   "homepage": "https://ambroselittle.github.io/flowy",
   "scripts": {
     "dev": "vite",
@@ -37,5 +38,8 @@
     "tailwindcss": "3.4.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

@@ -1,30 +1,50 @@
-# React + TypeScript + Vite
+Sample project using the [Video Games Dataset from Kaggle](https://www.kaggle.com/datasets/sidtwr/videogames-sales-dataset/data?select=Video_Games_Sales_as_at_22_Dec_2016.csv).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Allows searching video games by name and, upon selection of a matching game, displays basic release and sales information.
 
-Currently, two official plugins are available:
+[Try It Here](https://ambroselittle.github.io/flowy/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Contributing
 
-## Expanding the ESLint configuration
+### Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Ensure you're on relevant node version. `nvm` is recommended: `nvm install`
+2. Install deps: `npm i`
+3. Run: `npm run dev`
 
-- Configure the top-level `parserOptions` property like this:
+### Key Technologies
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Victory Charts](https://commerce.nearform.com/open-source/victory/)
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+This was generated with `vite` and `tailwind` and customized from there.
+
+Prefer to use/extend the above rather than adding new.
+
+### Structure
+
+Follows standard core assets structure shared by vite/CRA/etc.
+
+#### Shared Components
+
+There's a root [src/components](./src/components/) folder that houses core shared components.
+
+#### Views/Pages
+
+Simple views can be off the src root. Anything more complex may warrant its own folder, and can optionally have feature-specific sub folders for greater organization.
+Prefer the organization by feature/feature area as the core organizing principle over asset type.
+
+### Testing
+
+TODO: Will use [vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+
+### Releasing
+
+Run `npm run deploy`. This will build and publish to GitHub pages. (You will need permissions to do this.)
+
+## Next Steps/Issues
+
+See the [issues](https://github.com/ambroselittle/flowy/issues) for open work items.

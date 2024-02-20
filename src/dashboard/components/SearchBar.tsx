@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { debounce } from "throttle-debounce";
 
-import { Game } from "../types";
-import { loadGameData } from "../dataLoader";
+import { Game } from "../../types";
+import { loadGameData } from "../../dataLoader";
 
 type SearchResult = {
   active: boolean;
@@ -10,12 +10,32 @@ type SearchResult = {
   games: Game[];
 };
 
+const DEFAULT_SEARCH_RESULT: SearchResult = {
+  active: false,
+  text: "",
+  games: [],
+};
+
+type AllGamesResult = {
+  loading: boolean;
+  error: boolean;
+  games: Game[];
+};
+
+const DEFAULT_GAMES_DATA_STATE: AllGamesResult = {
+  loading: true,
+  error: false,
+  games: [],
+};
+
 type SearchBarProps = {
   onGameSelect: (selectedGame: Game) => void;
 };
 
 export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
-  const [allGames, setAllGames] = useState<Game[]>([]);
+  const [allGames, setAllGames] = useState<AllGamesResult>(
+    DEFAULT_GAMES_DATA_STATE
+  );
 
   const findGames = useCallback((gameName: string, gameSet: Game[]): Game[] => {
     const searchVal = new RegExp(gameName, "i");
@@ -26,21 +46,30 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
   useEffect(() => {
     const controller = new AbortController();
 
+    console.log("loading");
+
     const load = async () => {
       const data = await loadGameData(controller.signal);
-      setAllGames(data);
+      const error = data instanceof Error;
+      setAllGames({
+        loading: false,
+        error,
+        games: error ? [] : data,
+      });
     };
 
     load();
 
-    return () => controller.abort();
+    return () => {
+      console.log("unmounting");
+
+      controller.abort();
+    };
   }, []);
 
-  const [lastSearch, setLastSearch] = useState<SearchResult>({
-    active: false,
-    text: "",
-    games: [],
-  });
+  const [lastSearch, setLastSearch] = useState<SearchResult>(
+    DEFAULT_SEARCH_RESULT
+  );
   const debouncedSearch = useRef(
     debounce(
       500,
@@ -49,11 +78,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
         previousSearch: SearchResult,
         defaultGameSet: Game[]
       ) => {
-        if (!search) {
-          return setLastSearch({ active: false, text: "", games: [] });
-        }
         if (previousSearch.text === search) {
           return;
+        }
+        if (!search.trim()) {
+          return setLastSearch(DEFAULT_SEARCH_RESULT);
         }
         const gamesToSearch =
           previousSearch.text && search.startsWith(previousSearch.text)
@@ -70,8 +99,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleGameSearch: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    debouncedSearch(e.target.value.trim(), lastSearch, allGames);
+    if (!allGames.loading && !allGames.error) {
+      debouncedSearch(e.target.value, lastSearch, allGames.games);
+    } else {
+      setLastSearch({
+        ...lastSearch,
+        games: [],
+      });
+    }
   };
+  console.log(lastSearch);
 
   const hideSearch = useCallback(() => {
     if (lastSearch.active) {
@@ -139,7 +176,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
           className="absolute z-10 bg-white w-full mt-1 p-2 border border-gray-600 rounded-md shadow-md"
         >
           {lastSearch.games.length === 0 ? (
-            <div>No matching games found. Try again.</div>
+            allGames.loading ? (
+              <div>Loading game data. Please wait...</div>
+            ) : allGames.error ? (
+              <div className="bg-red-100 font-bold text-red-900 p-2 rounded-md">
+                There was a problem loading game data. Please try again later.
+              </div>
+            ) : (
+              <div>No matching games found. Try again.</div>
+            )
           ) : (
             lastSearch.games.map((game) => (
               <div
