@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { VictoryChart, VictoryBar, VictoryStack, VictoryAxis } from "victory";
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryStack,
+  VictoryAxis,
+  VictoryTooltip,
+} from "victory";
 import { RegionSales } from "../../types";
 
 interface GeoSalesCardProps {
@@ -7,23 +13,14 @@ interface GeoSalesCardProps {
 }
 
 export const SalesChart: React.FC<GeoSalesCardProps> = ({ gameSales }) => {
-  const [animatedData, setAnimatedData] = useState<RegionSales[]>(
-    gameSales.map<RegionSales>((game) => ({
-      ...game,
-      platformSales: game.platformSales.map((regionSale) => ({
-        ...regionSale,
-        units: 0,
-      })),
+  console.table(
+    gameSales.map((g) => ({
+      ...g,
+      platformSales: g.platformSales
+        .map((p) => `${p.platform}: ${p.units}`)
+        .join(", "),
     }))
   );
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setAnimatedData(gameSales);
-    }, 50);
-
-    return () => clearTimeout(timeoutId);
-  }, [gameSales]);
 
   return (
     <div style={{ maxHeight: "75vh" }}>
@@ -31,19 +28,43 @@ export const SalesChart: React.FC<GeoSalesCardProps> = ({ gameSales }) => {
         domainPadding={40}
         padding={{ top: 20, bottom: 80, left: 50, right: 0 }}
       >
-        <VictoryStack colorScale="blue">
-          {animatedData.map((game) => (
-            <VictoryBar
-              key={game.region}
-              data={game.platformSales}
-              x="platform"
-              y="units"
-              animate={{
-                duration: 1500,
-                onLoad: { duration: 1500 },
-              }}
-            />
-          ))}
+        <VictoryStack
+          colorScale="blue"
+          animate={{
+            duration: 500,
+          }}
+        >
+          {gameSales.map((region) =>
+            region.platformSales.map((platform) => (
+              <VictoryBar
+                labelComponent={
+                  <VictoryTooltip
+                    flyoutStyle={{
+                      stroke: "none",
+                      fill: "darkgrey",
+                      filter: "drop-shadow(0 0 5px rgba(0,0,0,0.5))",
+                    }}
+                    style={{ fill: "white" }}
+                    cornerRadius={5}
+                    pointerLength={10}
+                  />
+                }
+                key={region.region + platform.platform}
+                labels={({ datum }) =>
+                  `${datum.platform}: ${datum.units.toLocaleString()}`
+                }
+                data={[
+                  {
+                    region: region.region,
+                    units: platform.units,
+                    platform: platform.platform,
+                  },
+                ]}
+                x="region"
+                y="units"
+              />
+            ))
+          )}
         </VictoryStack>
         <VictoryAxis dependentAxis />
         <VictoryAxis
