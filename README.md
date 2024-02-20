@@ -37,7 +37,7 @@ Any shared (cross-view) components should be added to a root `src/components` fo
 Views (pages) are off the src root. It's recommended to make a folder per feature or feature area (with features below it).
 Organize feature-dependent assets/components/styles in the relevant feature folder.
 
-### Error Handling
+#### Error Handling
 
 TODO: Add common logging library. Until then, catch and log error details to console.error.
 Be sure to handle and display usable error messages where appropriate.
