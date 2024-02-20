@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { SearchBar } from "./components/SearchBar";
+import { GeoSalesCard } from "./components/GeoSalesCard";
+import { Game } from "./types";
+
+const App: React.FC = () => {
+  const [selectedGame, setSelectedGame] = useState<Game | undefined>();
+  console.log("sel:", selectedGame);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="flex flex-col h-screen text-gray-800">
+      <header className="bg-gray-800 p-4">
+        <h1 className="text-2xl text-white font-bold">
+          Video Game Sales Dashboard
+        </h1>
+        <SearchBar onGameSelect={setSelectedGame} />
+      </header>
+      <main className="p-4 grid grid-cols-2 gap-4">
+        {selectedGame && (
+          <>
+            <div>{selectedGame.name}</div>
+            <div>
+              <GeoSalesCard gameSales={selectedGame.sales} />
+            </div>
+          </>
+        )}
+      </main>
+    </div>
+  );
+};
 
-export default App
+export default App;
