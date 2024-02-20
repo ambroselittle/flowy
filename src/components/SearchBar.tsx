@@ -111,6 +111,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
     onGameSelect(game);
   };
 
+  const activateSearch = () => {
+    if (lastSearch.text && !lastSearch.active) {
+      setLastSearch({
+        ...lastSearch,
+        active: true,
+      });
+    }
+  };
+
   return (
     <div className="relative mt-4" ref={dropdownRef}>
       <input
@@ -121,6 +130,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onGameSelect }) => {
         className="mt-1 p-2 border border-gray-600 rounded-md w-full "
         onChange={handleGameSearch}
         onKeyDown={handleKeyDown}
+        onFocus={activateSearch}
+        onClick={activateSearch}
       />
       {lastSearch.active && (
         <div
