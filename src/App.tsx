@@ -1,28 +1,25 @@
 import React, { useState } from "react";
 
 import { SearchBar } from "./components/SearchBar";
-import { GeoSalesCard } from "./components/GeoSalesCard";
+import { SalesChart } from "./components/SalesChart";
 import { Game } from "./types";
+import { GameMeta } from "./components/GameMeta";
 
 const App: React.FC = () => {
   const [selectedGame, setSelectedGame] = useState<Game | undefined>();
-  console.log("sel:", selectedGame);
-
   return (
-    <div className="flex flex-col h-screen text-gray-800">
+    <div className="grid grid-rows-layout h-screen text-gray-800">
       <header className="bg-gray-800 p-4">
         <h1 className="text-2xl text-white font-bold">
           Video Game Sales Dashboard
         </h1>
         <SearchBar onGameSelect={setSelectedGame} />
       </header>
-      <main className="p-4 grid grid-cols-2 gap-4">
+      <main className="grid grid-rows-main">
         {selectedGame && (
           <>
-            <div>{selectedGame.name}</div>
-            <div>
-              <GeoSalesCard gameSales={selectedGame.sales} />
-            </div>
+            <GameMeta game={selectedGame} />
+            <SalesChart gameSales={selectedGame.sales} />
           </>
         )}
       </main>

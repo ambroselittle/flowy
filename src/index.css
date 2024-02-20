@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.grid-rows-layout {
+  display: grid;
+  grid-template-rows: auto 1fr; /* Header takes auto height, main takes remaining space */
+}
+
+.grid-rows-main {
+  display: grid;
+  grid-template-rows: auto 1fr; /* Top detail area takes auto height, bottom detail area takes remaining space */
+}
+
+/* Add any additional styles as needed */

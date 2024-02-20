@@ -1,6 +1,6 @@
 import Papa from "papaparse";
 
-import { Game } from "./types";
+import { Game, RegionSales } from "./types";
 
 export const loadGameData = async (signal: AbortSignal): Promise<Game[]> => {
   try {
@@ -30,6 +30,14 @@ type RawGame = {
   JP_Sales: string;
   Other_Sales: string;
   Global_Sales: string;
+  [index: string]: string | undefined;
+};
+
+const regionSalesColumnMap: Record<RegionSales["region"], string> = {
+  "North America": "NA_Sales",
+  Europe: "EU_Sales",
+  Japan: "JP_Sales",
+  "Rest of World": "Other_Sales",
 };
 
 const parseCsv = async (raw: string): Promise<Game[]> => {
@@ -50,29 +58,35 @@ const parseCsv = async (raw: string): Promise<Game[]> => {
                 name: rawGame.Name,
                 publisher: rawGame.Publisher,
                 releaseYear: rawGame.Year_of_Release,
-                sales: [],
+                sales: [
+                  {
+                    region: "North America",
+                    platformSales: [],
+                  },
+                  {
+                    region: "Europe",
+                    platformSales: [],
+                  },
+                  {
+                    region: "Japan",
+                    platformSales: [],
+                  },
+                  {
+                    region: "Rest of World",
+                    platformSales: [],
+                  },
+                ],
               });
 
-            game.sales.push({
-              platform: rawGame.Platform,
-              regionSales: [
-                {
-                  region: "North America",
-                  unitsMillion: parseFloat(rawGame.NA_Sales),
-                },
-                {
-                  region: "Europe",
-                  unitsMillion: parseFloat(rawGame.EU_Sales),
-                },
-                {
-                  region: "Japan",
-                  unitsMillion: parseFloat(rawGame.JP_Sales),
-                },
-                {
-                  region: "Rest of World",
-                  unitsMillion: parseFloat(rawGame.Other_Sales),
-                },
-              ],
+            game.sales.forEach((regionSales) => {
+              const regionSalesColumn =
+                regionSalesColumnMap[regionSales.region];
+              regionSales.platformSales.push({
+                platform: rawGame.Platform,
+                units:
+                  (parseFloat(rawGame[regionSalesColumn] ?? "0") || 0) *
+                  1000000,
+              });
             });
           }
           return resolve(Object.values(gameMap));
@@ -83,76 +97,3 @@ const parseCsv = async (raw: string): Promise<Game[]> => {
     });
   });
 };
-
-// const sampleGames: Game[] = [
-//   {
-//     name: "2002 FIFA World Cup",
-//     publisher: "Electronic Arts",
-//     releaseYear: "2002",
-//     sales: [
-//       {
-//         platform: "PS2",
-//         regionSales: [
-//           {
-//             region: "North America",
-//             unitsMillion: 0.21,
-//           },
-//           {
-//             region: "Europe",
-//             unitsMillion: 0.17,
-//           },
-//           {
-//             region: "Japan",
-//             unitsMillion: 0.16,
-//           },
-//           {
-//             region: "Rest of World",
-//             unitsMillion: 0.06,
-//           },
-//         ],
-//       },
-//       {
-//         platform: "XB",
-//         regionSales: [
-//           {
-//             region: "North America",
-//             unitsMillion: 0.14,
-//           },
-//           {
-//             region: "Europe",
-//             unitsMillion: 0.04,
-//           },
-//           {
-//             region: "Japan",
-//             unitsMillion: 0,
-//           },
-//           {
-//             region: "Rest of World",
-//             unitsMillion: 0.01,
-//           },
-//         ],
-//       },
-//       {
-//         platform: "GC",
-//         regionSales: [
-//           {
-//             region: "North America",
-//             unitsMillion: 0.04,
-//           },
-//           {
-//             region: "Europe",
-//             unitsMillion: 0.01,
-//           },
-//           {
-//             region: "Japan",
-//             unitsMillion: 0,
-//           },
-//           {
-//             region: "Rest of World",
-//             unitsMillion: 0,
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];

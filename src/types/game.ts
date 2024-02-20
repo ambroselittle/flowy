@@ -1,11 +1,11 @@
-export interface RegionSales {
-  region: "North America" | "Europe" | "Japan" | "Rest of World";
-  unitsMillion: number;
+export interface PlatformSales {
+  platform: string;
+  units: number;
 }
 
-export interface GameSales {
-  platform: string;
-  regionSales: RegionSales[];
+export interface RegionSales {
+  region: "North America" | "Europe" | "Japan" | "Rest of World";
+  platformSales: PlatformSales[];
 }
 
 export interface Game {
@@ -13,5 +13,5 @@ export interface Game {
   publisher: string;
   releaseYear: string;
 
-  sales: GameSales[];
+  sales: RegionSales[];
 }
